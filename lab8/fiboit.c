@@ -16,7 +16,7 @@ int fibo(int n){
    int old=1;
    int oldold=1;
    int i;
-   for (i=0;i<n;i++) { // i++ is the same as i=i+1
+   for (i=0;i<n;i++) {
       int tmp = old;
       old=old+oldold;
       oldold=tmp;

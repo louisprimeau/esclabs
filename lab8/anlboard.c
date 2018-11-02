@@ -1,15 +1,12 @@
-/*#include <stdio.h>
-int anlboard();
-int main(void){
-  int Board[9] = {1,2,1,1,2,1,2,1,2};
-  printf("%d\n",anlboard(Board, 9));
-  return(0);
-}*/
 int anlboard(int *T, int sizeT){
+  int openmoves = 0;
+  int i = 0;
+  int returnval = 0;
+
   if(sizeT > 9 || sizeT < 1){
     return(-1);
   }
-  int returnval = 0;
+  returnval = 0;
   if((T[0] == T[1]) && (T[1] == T[2]) && (T[0] != 0)){
     returnval = T[0];
   }else if((T[3] == T[4]) && (T[4] == T[5]) && (T[3] != 0)){
@@ -27,8 +24,7 @@ int anlboard(int *T, int sizeT){
   }else if((T[2] == T[4]) && (T[4] == T[6]) && (T[2] != 0)){
     returnval = T[2];
   }
-  int openmoves = 0;
-  int i;
+  openmoves = 0;
   for(i = 0; i < 9; i++){
     if(T[i] == 0){
       openmoves++;

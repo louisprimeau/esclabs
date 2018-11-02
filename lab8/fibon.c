@@ -7,7 +7,6 @@ int main(void) {
    int arg = 0;
    printf("Enter a number:\n");
    scanf("%d",&arg);
-   /*printf("\n");*/
    for (i=0;i<arg;i=i+1){
       int f = fibo(i);
       printf("fibo(%d)=%d\n",i,f);
