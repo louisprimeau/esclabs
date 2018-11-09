@@ -24,35 +24,49 @@ def ge_fw(A):
     C = ge_fw([i[1:] for i in B[1:]]) #Step 3
     for i in range(0,len(C),1):
         B[i+1][1:] = C[i]
-
     return(B)
 
+def findlastzero(A):
+    for i in range(len(A)-1,-1,-1):
+        for j in range(0,len(A[i]),1):
+            if(A[i][j] != 0):
+                return([i,j])
+    return(0)
+
 def ge_bw(A):
-    B = list(A)
 
-    if(len(B) <= 1):
+    B = list(A) #Assign return matrix
+    index = findlastzero(B) #find nonzero row and col
+    if(len(B) <= 1): #If too small do nothing
         return(B)
+    if(B[0][0] == 0):
+        return(B)
+    for i in range(0,len(B[ index[0] ]),1): #Normalize last nonzero row
+        B[ index[0] ][i] = B[ index[0] ][i] / B[ index[0] ][ index[1] ]
 
-    lastnonzero = 0
-    for i in range(len(B)-1,-1,-1):
-        if(B[i][0] != 0):
-            for j in range(1,len(B[i]),1):
-                B[i][j] = B[i][j] / B[i][0]
-            B[i][0] = 1
-            lastnonzero = i
-            break
-    print(B)
-    for i in range(0,lastnonzero,1):
-        for j in range(1,len(B[i]),1):
-            B[i][j] = B[i][j] - (B[i][0] / B[lastnonzero][0]) * B[lastnonzero][j]
-        B[i][0] = 0
-    print(B)
+    for i in range(0,index[0],1): #Zero out nonzero row lead zero column
+        for j in range(0,len(B[i]),1):
+            B[i][j] -= (B[i][ index[1] ] / B[ index[0] ][ index[1] ]) * B[ index[0] ][j]
 
-    C = ge_bw(i[1:] for i in B[0:lastnonzero] + B[lastnonzero+1:len(B)])
-    print(C)
-    for i in range(0,lastnonzero,1):
-        B[i][1:] = C[i]
-    for i in range(lastnonzero+1,len(C),1):
-        B[i][1:] = C[i]
+    C = ge_bw((i[ 0:index[1] ] + i[ index[1]+1:len(B[0]) ]) for i in B[ 0:index[0] ] + B[ index[0]+1:len(B) ]) #Generate the submatrix, perform backwards again and assign to C
+
+    for i in range(0,index[0],1): #Stick C into A
+        for j in range(0,index[1],1):
+            B[i][j] = C[i][j]
+        for j in range(index[1]+1,len(B[i]),1):
+            B[i][j] = C[i][j-1]
+    for i in range(index[0]+1,len(B),1):
+        for j in range(0,index[1],1):
+            B[i][j] = C[i-1][j]
+        for j in range(index[1]+1,len(B[i]),1):
+            B[i][j] = C[i-1][j-1]
+
+    """
+    #Illegal but conceptually easier
+    B[0:index[0]][0:index[1]] = C[0:index[0]][0:index[1]]
+    B[index[0]:len(B)][0:index[1]] = C[index[0]-1:len(C)][0:index[1]]
+    B[0:index[0]][index[1]:len(B)] = C[0:index[0]][index[1]-1:len(C)]
+    B[index[0]:len(B)][index[1]:len(B)] = C[index[0]-1:len(C)][index[1]-1:len(C)]"""
+
 
     return(B)
