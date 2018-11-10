@@ -27,16 +27,19 @@ def ge_fw(A):
     return(B)
 
 def findlastzero(A):
-    for i in range(len(A)-1,-1,-1):
-        for j in range(0,len(A[i]),1):
-            if(A[i][j] != 0):
-                return([i,j])
+
     return(0)
 
 def ge_bw(A):
 
     B = list(A) #Assign return matrix
-    index = findlastzero(B) #find nonzero row and col
+
+    index = [0,0]
+    for i in range(len(A)-1,-1,-1):
+        for j in range(0,len(A[i]),1):
+            if(A[i][j] != 0):
+                index = [i,j]
+                
     if(len(B) <= 1): #If too small do nothing
         return(B)
     if(B[0][0] == 0):
