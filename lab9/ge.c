@@ -91,6 +91,7 @@ int ge_bw(float *matrix, int rows, int cols, float *matrix_out){
   float *submatrix= NULL;
   float *submatrixhold = NULL;
   float *hold = NULL;
+  float *workaround = NULL;
   float f = 0.0;
   int lastnonzero = 0.0;
   int firstelement = 0.0;
@@ -107,6 +108,12 @@ int ge_bw(float *matrix, int rows, int cols, float *matrix_out){
   for(i = 0; i < rows; i++){
     for(j = 0; j < cols; j++){
       matrix_out[cols*i + j] = matrix[cols*i + j];
+    }
+  }
+  workaround = (float *)malloc((rows)*(cols)*sizeof(float)); //assign submatrix memory stuff
+  for(i = 0; i < rows; i++){
+    for(j = 0; j < cols; j++){
+      workaround[cols*i + j] = matrix[cols*i + j];
     }
   }
 
@@ -176,8 +183,12 @@ int ge_bw(float *matrix, int rows, int cols, float *matrix_out){
       matrix_out[(i+lastnonzero+1)*cols + j] = submatrixhold[i*(cols-1) + (j-1)];
     }
   }
-  print(matrix,rows,cols);
-  print(matrix_out,rows,cols);
+
+  for(i = 0; i < rows; i++){
+    for(j = 0; j < cols; j++){
+      matrix[cols*i + j] = workaround[cols*i + j];
+    }
+  }
 
   return(1);
 }
