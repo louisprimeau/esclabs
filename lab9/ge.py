@@ -39,7 +39,7 @@ def ge_bw(A):
         for j in range(0,len(A[i]),1):
             if(A[i][j] != 0):
                 index = [i,j]
-                
+
     if(len(B) <= 1): #If too small do nothing
         return(B)
     if(B[0][0] == 0):
@@ -53,23 +53,11 @@ def ge_bw(A):
 
     C = ge_bw((i[ 0:index[1] ] + i[ index[1]+1:len(B[0]) ]) for i in B[ 0:index[0] ] + B[ index[0]+1:len(B) ]) #Generate the submatrix, perform backwards again and assign to C
 
-    for i in range(0,index[0],1): #Stick C into A
-        for j in range(0,index[1],1):
-            B[i][j] = C[i][j]
-        for j in range(index[1]+1,len(B[i]),1):
-            B[i][j] = C[i][j-1]
-    for i in range(index[0]+1,len(B),1):
-        for j in range(0,index[1],1):
-            B[i][j] = C[i-1][j]
-        for j in range(index[1]+1,len(B[i]),1):
-            B[i][j] = C[i-1][j-1]
-
-    """
     #Illegal but conceptually easier
     B[0:index[0]][0:index[1]] = C[0:index[0]][0:index[1]]
     B[index[0]:len(B)][0:index[1]] = C[index[0]-1:len(C)][0:index[1]]
     B[0:index[0]][index[1]:len(B)] = C[0:index[0]][index[1]-1:len(C)]
-    B[index[0]:len(B)][index[1]:len(B)] = C[index[0]-1:len(C)][index[1]-1:len(C)]"""
+    B[index[0]:len(B)][index[1]:len(B)] = C[index[0]-1:len(C)][index[1]-1:len(C)]
 
 
     return(B)
