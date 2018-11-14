@@ -76,8 +76,8 @@ int ll_del_from_tail(llnode **ppList){
   if(ppList == NULL){return(-1);}
   if((**ppList).next == NULL){
     holder = (**ppList).next;
-    ll_free(holder); //Free the tail
-    *ppList = NULL; //Assign the llnode pointer we're on to null
+    ll_free(holder); 
+    *ppList = NULL; 
     return(0);
   }else{
     return(ll_del_from_tail(&((**ppList).next)));
@@ -91,25 +91,25 @@ int ll_del_from_head(llnode **ppList){
 int ll_insert_in_order(llnode **ppList,int val){
   llnode *newentry;
   if(ppList == NULL){return(-1);}
-  if((**ppList).val >= val){ //if smaller than first element, stick it in.
+  if((**ppList).val >= val){ 
     newentry = (llnode *)malloc(sizeof(llnode));
     newentry->val = val;
     newentry->next = (**ppList).next;
     *ppList = newentry;
     return(0);
-  }else if((**ppList).next == NULL){//If we're at the end of the list, stick it there.
+  }else if((**ppList).next == NULL){
     newentry = (llnode *)malloc(sizeof(llnode));
     newentry->val = val;
     newentry->next = NULL;
     *ppList = newentry;
     return(0);
-  }else if(val >= ((**ppList).val) && val <= ((*((**ppList).next)).val)){ //else, put it where it belongs.
+  }else if(val >= ((**ppList).val) && val <= ((*((**ppList).next)).val)){ 
     newentry = (llnode *)malloc(sizeof(llnode));
     newentry->val = val;
     newentry->next = (**ppList).next;
     (**ppList).next = newentry;
     return(0);
-  }else{ //failing that, recurse to the next element in the ll
+  }else{ 
     return(ll_insert_in_order(&((**ppList).next),val));
   }
 }
