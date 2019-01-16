@@ -26,10 +26,6 @@ def ge_fw(A):
         B[i+1][1:] = C[i]
     return(B)
 
-def findlastzero(A):
-
-    return(0)
-
 def ge_bw(A):
 
     B = list(A) #Assign return matrix
