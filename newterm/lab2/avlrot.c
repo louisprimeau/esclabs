@@ -1,6 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
+
+
 struct avlNode {
    int balance; /* -1 Left, 0 balanced, +1 Right */
    int val;
@@ -15,15 +18,14 @@ struct qNode {
 };
 typedef struct qNode qNode;
 
-
-
+int bstenq(qNode **root, avlNode *nxt);
+int bstdeq(qNode **root,avlNode **pval);
 int isAVL(avlNode **root);
 int depth(avlNode *root);
 int rotate(avlNode **root,unsigned int Left0_Right1);
 int dblrotate(avlNode **root,unsigned int MajLMinR0_MajRMinL1);
 int printinorder(avlNode *root);
 int printlevelorder(avlNode *root);
-
 
 int bstenq(qNode **root, avlNode *nxt){
   qNode *copy = NULL;
@@ -89,6 +91,8 @@ int isAVL(avlNode **root){
     return(0);
   }
 }
+
+
 
 int rotate(avlNode **root,unsigned int Left0_Right1){
   avlNode *newroot;
