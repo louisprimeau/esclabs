@@ -1,2 +1,2 @@
 def f(c):
-    return(c % 100)
+    return(c % 91 + 10)
