@@ -1,9 +1,9 @@
 from chessHelper import *
 
-def GetPlayerPositions(board,player):
-    return([i for i,x in enumerate(board) if(x >= player and x < player + 10)])
-def GetPieceLegalMoves(board,position):
-    value = board[position]
+def GetPlayerPositions(b,pl):
+    return([i for i,x in enumerate(b) if(x >= pl and x < pl + 10)])
+def GetPieceLegalMoves(b,position):
+    value = b[position]
     legalmoves = []
     pl = player(value)
     pi = piece(value)
@@ -12,20 +12,22 @@ def GetPieceLegalMoves(board,position):
 
         # CHECK DIRECTLY IN FRONT
         move = position + pl * 8
-        if(board[move] == 0 and move >= 0 and move < 64):
+        if(move >= 0 and move < 64 and b[move] == 0):
             legalmoves.append(move)
 
         # CHECK TO LEFT
-        c = board[move - 1]
-        a = player(c)
-        if(c != 0 and a != pl and a != 0 and (-10 < (position - (move - 1) < 10))):
-            legalmoves.append(move - 1)
+        if(0 <= move-1 <64):
+            c = b[move - 1]
+            a = player(c)
+            if(c != 0 and a != pl and a != 0 and (-10 < (position - (move - 1) < 10))):
+                legalmoves.append(move - 1)
 
         # CHECK TO RIGHT
-        c = board[move + 1]
-        a = player(c)
-        if((c != 0) and a != pl and a != 0 and (-10 < (position - (move + 1) < 10))):
-            legalmoves.append(move + 1)
+        if(0 <= move+1 <64):
+            c = b[move + 1]
+            a = player(c)
+            if((c != 0) and a != pl and a != 0 and (-10 < (position - (move + 1) < 10))):
+                legalmoves.append(move + 1)
 
     #Knights:
     elif(pi == 1):
@@ -37,7 +39,7 @@ def GetPieceLegalMoves(board,position):
             #2forward 1left:
             move = position + 8 * 2 - 1
             if(abs(move % 8 - position % 8) == 1):
-                c = board[move]
+                c = b[move]
                 a = player(c)
                 if(a != pl):
                     legalmoves.append(move)
@@ -45,7 +47,7 @@ def GetPieceLegalMoves(board,position):
             #2forward 1right:
             move = position + 8 * 2 + 1
             if(abs(move % 8 - position % 8) == 1):
-                c = board[move]
+                c = b[move]
                 a = player(c)
                 if(a != pl):
                     legalmoves.append(move)
@@ -55,7 +57,7 @@ def GetPieceLegalMoves(board,position):
             #1forward 2left
             move = position + 8 * 1 - 2
             if(abs(move % 8 - position % 8) == 2):
-                c = board[move]
+                c = b[move]
                 a = player(c)
                 if(a != pl):
                     legalmoves.append(move)
@@ -63,7 +65,7 @@ def GetPieceLegalMoves(board,position):
             #1forward 2right
             move = position + 8 * 1 + 2
             if(abs(move % 8 - position % 8) == 2):
-                c = board[move]
+                c = b[move]
                 a = player(c)
                 if(a != pl):
                     legalmoves.append(move)
@@ -76,7 +78,7 @@ def GetPieceLegalMoves(board,position):
             #2backward 1left:
             move = position + -1 * 8 * 2 - 1
             if(abs(move % 8 - position % 8) == 1):
-                c = board[move]
+                c = b[move]
                 a = player(c)
                 if(a != pl):
                     legalmoves.append(move)
@@ -84,7 +86,7 @@ def GetPieceLegalMoves(board,position):
             #2backward 1right:
             move = position + -1 * 8 * 2 + 1
             if(abs(move % 8 - position % 8) == 1):
-                c = board[move]
+                c = b[move]
                 a = player(c)
                 if(a != pl):
                     legalmoves.append(move)
@@ -92,17 +94,17 @@ def GetPieceLegalMoves(board,position):
         if(64 > position + -1 * 8 * 1 > 0):
 
             #1backward 2left
-            move = position + -1 * 8 * 1 - 2
+            move = position + -1 * 8 + 2
             if(abs(move % 8 - position % 8) == 2):
-                c = board[move]
+                c = b[move]
                 a = player(c)
                 if(a != pl):
                     legalmoves.append(move)
 
             #1backward 2right
-            move = position + -1 * 8 * 1 + 2
+            move = position + -1 * 8 - 2
             if(abs(move % 8 - position % 8) == 2):
-                c = board[move]
+                c = b[move]
                 a = player(c)
                 if(a != pl):
                     legalmoves.append(move)
@@ -115,9 +117,9 @@ def GetPieceLegalMoves(board,position):
         for i in range(1,min(8 - rows, cols + 1),1):
 
             move = position + 8 * i - i
-            if(board[move] == 0):
+            if(b[move] == 0):
                 legalmoves.append(move)
-            elif(player(board[move]) != pl):
+            elif(player(b[move]) != pl):
                 legalmoves.append(move)
                 break
             else:
@@ -126,9 +128,9 @@ def GetPieceLegalMoves(board,position):
         for i in range(1,min(8 - rows, 8- cols),1):
 
             move = position + 8 * i + i
-            if(board[move] == 0):
+            if(b[move] == 0):
                 legalmoves.append(move)
-            elif(player(board[move]) != pl):
+            elif(player(b[move]) != pl):
                 legalmoves.append(move)
                 break
             else:
@@ -136,9 +138,9 @@ def GetPieceLegalMoves(board,position):
         #LeftBackwardDiag:
         for i in range(1,min(rows + 1, 8 - cols),1):
             move = position + -1 * 8 * i + i
-            if(board[move] == 0):
+            if(b[move] == 0):
                 legalmoves.append(move)
-            elif(player(board[move]) != pl):
+            elif(player(b[move]) != pl):
                 legalmoves.append(move)
                 break
             else:
@@ -147,9 +149,9 @@ def GetPieceLegalMoves(board,position):
 
         for i in range(1,min(rows + 1, cols + 1),1):
             move = position + -1 * 8 * i - i
-            if(board[move] == 0):
+            if(b[move] == 0):
                 legalmoves.append(move)
-            elif(player(board[move]) != pl):
+            elif(player(b[move]) != pl):
                 legalmoves.append(move)
                 break
             else:
@@ -160,9 +162,9 @@ def GetPieceLegalMoves(board,position):
 
         for i in range(1, 8 - (position // 8), 1):
             move = position + 8 * i
-            if(board[move] == 0):
+            if(b[move] == 0):
                 legalmoves += [move]
-            elif(player(board[move]) != pl):
+            elif(player(b[move]) != pl):
                 legalmoves += [move]
                 break
             else:
@@ -171,9 +173,9 @@ def GetPieceLegalMoves(board,position):
         #Backward:
         for i in range(1, (position // 8) + 1, 1):
             move = position + 8 * i * -1
-            if(board[move] == 0):
+            if(b[move] == 0):
                 legalmoves += [move]
-            elif(player(board[move]) != pl):
+            elif(player(b[move]) != pl):
                 legalmoves += [move]
                 break
             else:
@@ -182,9 +184,9 @@ def GetPieceLegalMoves(board,position):
         #Left:
         for i in range(1, 8 - (position % 8), 1):
             move = position + i
-            if(board[move] == 0):
+            if(b[move] == 0):
                 legalmoves += [move]
-            elif(player(board[move]) != pl):
+            elif(player(b[move]) != pl):
                 legalmoves += [move]
                 break
             else:
@@ -193,9 +195,9 @@ def GetPieceLegalMoves(board,position):
         #Right:
         for i in range(1, position % 8 + 1, 1):
             move = position - i
-            if(board[move] == 0):
+            if(b[move] == 0):
                 legalmoves += [move]
-            elif(player(board[move]) != pl):
+            elif(player(b[move]) != pl):
                 legalmoves += [move]
                 break
             else:
@@ -207,9 +209,9 @@ def GetPieceLegalMoves(board,position):
 
         for i in range(1,min(8 - rows, cols + 1),1):
             move = position + 8 * i - i
-            if(board[move] == 0):
+            if(b[move] == 0):
                 legalmoves.append(move)
-            elif(player(board[move]) != pl):
+            elif(player(b[move]) != pl):
                 legalmoves.append(move)
                 break
             else:
@@ -217,9 +219,9 @@ def GetPieceLegalMoves(board,position):
         #LeftForwardDiag:
         for i in range(1,min(8 - rows, 8- cols),1):
             move = position + 8 * i + i
-            if(board[move] == 0):
+            if(b[move] == 0):
                 legalmoves.append(move)
-            elif(player(board[move]) != pl):
+            elif(player(b[move]) != pl):
                 legalmoves.append(move)
                 break
             else:
@@ -227,9 +229,9 @@ def GetPieceLegalMoves(board,position):
         #LeftBackwardDiag:
         for i in range(1,min(rows + 1, 8 - cols),1):
             move = position + -1 * 8 * i + i
-            if(board[move] == 0):
+            if(b[move] == 0):
                 legalmoves.append(move)
-            elif(player(board[move]) != pl):
+            elif(player(b[move]) != pl):
                 legalmoves.append(move)
                 break
             else:
@@ -238,9 +240,9 @@ def GetPieceLegalMoves(board,position):
 
         for i in range(1,min(rows + 1, cols + 1),1):
             move = position + -1 * 8 * i - i
-            if(board[move] == 0):
+            if(b[move] == 0):
                 legalmoves.append(move)
-            elif(player(board[move]) != pl):
+            elif(player(b[move]) != pl):
                 legalmoves.append(move)
                 break
             else:
@@ -248,9 +250,9 @@ def GetPieceLegalMoves(board,position):
 
         for i in range(1, 8 - rows, 1):
             move = position + 8 * i
-            if(board[move] == 0):
+            if(b[move] == 0):
                 legalmoves += [move]
-            elif(player(board[move]) != pl):
+            elif(player(b[move]) != pl):
                 legalmoves += [move]
                 break
             else:
@@ -259,9 +261,9 @@ def GetPieceLegalMoves(board,position):
         #Backward:
         for i in range(1, rows + 1, 1):
             move = position + 8 * i * -1
-            if(board[move] == 0):
+            if(b[move] == 0):
                 legalmoves += [move]
-            elif(player(board[move]) != pl):
+            elif(player(b[move]) != pl):
                 legalmoves += [move]
                 break
             else:
@@ -270,9 +272,9 @@ def GetPieceLegalMoves(board,position):
         #Left:
         for i in range(1, 8 - cols, 1):
             move = position + i
-            if(board[move] == 0):
+            if(b[move] == 0):
                 legalmoves += [move]
-            elif(player(board[move]) != pl):
+            elif(player(b[move]) != pl):
                 legalmoves += [move]
                 break
             else:
@@ -281,31 +283,31 @@ def GetPieceLegalMoves(board,position):
         #Right:
         for i in range(1, cols + 1, 1):
             move = position - i
-            if(board[move] == 0):
+            if(b[move] == 0):
                 legalmoves += [move]
-            elif(player(board[move]) != pl):
+            elif(player(b[move]) != pl):
                 legalmoves += [move]
                 break
             else:
                 break
-    if(pi==5):
+    elif(pi==5):
         moves = [position + 8, position + 8 + 1, position + 8 - 1,
                 position - 8, position - 8 + 1, position - 8 - 1,
                 position + 1, position - 1
                 ]
         for move in moves:
             if(move < 64 and move >= 0 and not(abs(move // 8 - position // 8) > 1 or abs(move % 8 - position % 8) > 1)):
-                if(board[move] == 0 or player(board[move]) != pl):
+                if(b[move] == 0 or player(b[move]) != pl):
                     legalmoves += [move]
 
     return(legalmoves)
-def IsPositionUnderThreat(board,position,player):
-    if(player == 10):
-        for i in GetPlayerPositions(board,20):
-            if position in GetPieceLegalMoves(board,i):
+def IsPositionUnderThreat(b,position,pl):
+    if(pl == 10):
+        for i in GetPlayerPositions(b,20):
+            if position in GetPieceLegalMoves(b,i):
                 return(True)
-    elif(player == 20):
-        for i in GetPlayerPositions(board,10):
+    elif(pl == 20):
+        for i in GetPlayerPositions(b,10):
             if(position in moves):
                 return(True)
     return(False)
@@ -382,11 +384,9 @@ def move(b,position,newmove):
 def search(b,pl,depth):
 
     newmove = [-1,-1]
-
     moves = getmoves(b,pl)
     moves.sort(key = lambda x: x[2], reverse = True)
-    moves = moves[0:3] #Pick 7 best moves.
-
+    moves = moves[0:5] #Pick 5 best moves.
 
     if(depth > 1):
         for i in range(0,len(moves),1):
@@ -395,8 +395,20 @@ def search(b,pl,depth):
             moves[i][2] = -maxscore(moves[i][3])
     return(moves)
 def levelorder(t):
+    traversal = []
+    q = []
     for i in t:
-        print(i[0:3])
+        q.append(i)
+    counter = 5
+    while(len(q) != 0):
+        pop = q.pop(0)
+        traversal.append(pop[0:3])
+        if(counter < 5 + 5**2):
+            if(len(pop) > 3):
+                for i in pop[3]:
+                    q.append(i)
+                    counter += 1
+    return(traversal)
 def maxscore(t):
     score = t[0][2]
     for i in range(0,len(t),1):
@@ -430,28 +442,20 @@ def forestprint(t):
         treeprint(i,1)
 def standardboard():
     return([
-13,11,12,15,14,12,11,13,
+13,11,12,14,15,12,11,13,
 10,10,10,10,10,10,10,10,
 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0,
 20,20,20,20,20,20,20,20,
-23,21,22,25,24,22,21,23,
+23,21,22,24,25,22,21,23,
 ])
-#t = search(board,10,4)
-#time(search,100,board,10,4)
-
 def chessPlayer(b,pl):
-    candidateMoves = [a[0:2] for a in getmoves(b,pl)]
-    move = search(b,pl,4)
-    print(move)
-    levelorder(move)
-    #evalTree = levelorder(move)
+    #DEPTH = Number of moves looked ahead; must be an even number.
+    depth = 6
+    candidateMoves = [[a[0:2], a[2]] for a in getmoves(b,pl)]
+    move = search(b,pl,depth)
+    tree = levelorder(move)
     move = maxscoremove(move)
-    return([True, move, candidateMoves, 1])
-
-
-#time(chessPlayer,1,standardboard(),10)
-#print(chessPlayer(standardboard(),10))
-#forestprint(t)
+    return([True, move, candidateMoves, tree])
