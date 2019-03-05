@@ -428,16 +428,6 @@ def treeprint(t,depth):
 def forestprint(t):
     for i in t:
         treeprint(i,1)
-
-"""def chessPlayer(b,pl):
-    #DEPTH = Number of moves looked ahead; must be an even number.
-    depth = 6
-    candidateMoves = [[a[0:2], a[2]] for a in getmoves(b,pl)]
-    move = search(b,pl,depth)
-    tree = levelorder(move)
-    move = maxscoremove(move)
-    return([True, move, candidateMoves, tree]) """
-
 def search(b,pl,depth):
 
     moves = getmoves(b,pl)
@@ -450,14 +440,11 @@ def search(b,pl,depth):
             moves[i].append(search(newboard, oppositepl(pl),depth-1))
             moves[i][2] = -maxscore(moves[i][3])
     return(moves)
-
 def chessPlayer(b,pl):
     candidateMoves = [[a[0:2], a[2]] for a in getmoves(b,pl)]
     move = alphabetaroot(b,pl)[0:2]
     tree = levelorder(search(b,pl,2))
     return([True,move,candidateMoves,tree])
-
-
 def alphabetaroot(b,pl):
     move = alphabetasearch(b,pl,-100000,100000,6)
     return(move)

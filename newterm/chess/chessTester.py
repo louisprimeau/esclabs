@@ -57,7 +57,7 @@ def chess():
 
         os.system('clear')
         start = time.process_time()
-        computermove = chessPlayer2(board,20)
+        computermove = chessPlayer(board,20)
         position,newmove = computermove[1][0],computermove[1][1]
         while(True):
             if position in GetPlayerPositions(board,20) and newmove in GetPieceLegalMoves(board,position):
@@ -87,7 +87,7 @@ def chessAI():
         printb(board)
         print("White to move")
         start = time.process_time()
-        computermove = chessPlayer2(board,10)
+        computermove = chessPlayer(board,10)
         end = time.process_time()
         print(end - start)
 
