@@ -1,4 +1,4 @@
-from chessHelper import *
+from chessPlayer_helper import *
 
 def GetPlayerPositions(b,pl):
     return([i for i,x in enumerate(b) if(x >= pl and x < pl + 10)])
@@ -311,19 +311,6 @@ def IsPositionUnderThreat(b,position,pl):
             if(position in moves):
                 return(True)
     return(False)
-def time(a, repetitions, *argv):
-    import time
-    import gc
-    gc.disable()
-    average = 0
-    for i in range(0,repetitions,10):
-        start = time.process_time()
-        a(*argv)
-        end = time.process_time()
-        average += (end - start)
-    print(average/repetitions)
-    gc.enable()
-    return(0)
 def score(b,pl):
 
     wpawn = [0, 0, 0, 0, 0, 0, 0, 0,
@@ -464,7 +451,7 @@ def search(b,pl,depth):
             moves[i][2] = -maxscore(moves[i][3])
     return(moves)
 
-def chessPlayer2(b,pl):
+def chessPlayer(b,pl):
     candidateMoves = [[a[0:2], a[2]] for a in getmoves(b,pl)]
     move = alphabetaroot(b,pl)[0:2]
     tree = levelorder(search(b,pl,2))
@@ -472,7 +459,7 @@ def chessPlayer2(b,pl):
 
 
 def alphabetaroot(b,pl):
-    move = alphabetasearch(b,pl,-100000,100000,7)
+    move = alphabetasearch(b,pl,-100000,100000,6)
     return(move)
 def alphabetasearch(b,pl,alpha,beta,depth):
 

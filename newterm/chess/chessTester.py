@@ -1,4 +1,17 @@
 from chessPlayer import *
+def time(a, repetitions, *argv):
+    import time
+    import gc
+    gc.disable()
+    average = 0
+    for i in range(0,repetitions,10):
+        start = time.process_time()
+        a(*argv)
+        end = time.process_time()
+        average += (end - start)
+    print(average/repetitions)
+    gc.enable()
+    return(0)
 
 def chess():
     import os
@@ -101,10 +114,6 @@ def chessAI():
         if not(15 in list(board[i] for i in GetPlayerPositions(board,10))):
             print('Black Wins')
             break
-
-        os.system('clear')
-        printb(board)
-
 
 chessAI()
 #chess
