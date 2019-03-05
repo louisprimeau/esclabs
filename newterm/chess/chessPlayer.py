@@ -376,8 +376,10 @@ def boardmove(b,position,newmove):
     bnew[position],bnew[newmove] = 0,bnew[position]
     return(bnew)
 def isKingUnderThreat(b,pl):
+    if not(pl + 5 in b):
+        return(False)
     king = b.index(pl + 5)
-    for i in GetPlayerPositions(b,pl):
+    for i in GetPlayerPositions(b,oppositepl(pl)):
         for j in GetPieceLegalMoves(b,i):
             if j == king:
                 return(True)
@@ -413,9 +415,17 @@ def maxscoremove(t):
     return(move)
 def getmoves(b, pl):
     moves = []
-    for i in GetPlayerPositions(b,pl):
-        for j in GetPieceLegalMoves(b,i):
-            moves.append([i,j,score(boardmove(b,i,j),pl)])
+
+    if(isKingUnderThreat(b,pl)):
+        for i in GetPlayerPositions(b,pl):
+            for j in GetPieceLegalMoves(b,i):
+                if not(isKingUnderThreat(boardmove(b,i,j),pl)):
+                    moves.append([i,j,score(boardmove(b,i,j),pl)])
+    else:
+        for i in GetPlayerPositions(b,pl):
+            for j in GetPieceLegalMoves(b,i):
+                moves.append([i,j,score(boardmove(b,i,j),pl)])
+
     return(moves)
 def treeprint(t,depth):
     print(t[0:3])
@@ -452,7 +462,10 @@ def alphabetasearch(b,pl,alpha,beta,depth):
 
     moves = getmoves(b,pl)
     moves.sort(key = lambda x: x[2], reverse = True)
-    moves = moves[0:5]
+    if(len(moves) == 0):
+        return([-1,-1,100000])
+    if(len(moves) > 7):
+        moves = moves[0:7]
 
     bestscore = -100000
     bestmove = []

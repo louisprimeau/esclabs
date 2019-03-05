@@ -103,3 +103,16 @@ def standardboard():
 20,20,20,20,20,20,20,20,
 23,21,22,25,24,22,21,23,
 ])
+def time(a, repetitions, *argv):
+    import time
+    import gc
+    gc.disable()
+    average = 0
+    for i in range(0,repetitions,10):
+        start = time.process_time()
+        a(*argv)
+        end = time.process_time()
+        average += (end - start)
+    print(average/repetitions)
+    gc.enable()
+    return(0)
