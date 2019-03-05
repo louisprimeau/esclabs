@@ -38,13 +38,13 @@ def chess():
 
                 newmove = coordmap(input('move to '))
 
-        if not(25 in list(b[i] for i in GetPlayerPositions(board,20))):
+        if not(25 in list(board[i] for i in GetPlayerPositions(board,20))):
             print('White Wins')
             break
 
         os.system('clear')
         start = time.process_time()
-        computermove = chessPlayer(board,20)
+        computermove = chessPlayer2(board,20)
         position,newmove = computermove[1][0],computermove[1][1]
         while(True):
             if position in GetPlayerPositions(board,20) and newmove in GetPieceLegalMoves(board,position):
@@ -60,20 +60,51 @@ def chess():
         end = time.process_time()
         print(end - start)
 
-        if not(15 in list(b[i] for i in GetPlayerPositions(board,10))):
+        if not(15 in list(board[i] for i in GetPlayerPositions(board,10))):
             print('Black Wins')
             break
 
-chess()
-b = [
-13,11,12,15,14,12,11,13,
-10,10,10,10,10,10,10,10,
-0, 0, 0, 0, 0, 0, 0, 0,
-0, 0, 0, 0, 0, 0, 0, 0,
-0, 0, 0, 0, 0, 0, 0, 0,
-0, 0, 0, 0, 0, 0, 0, 0,
-20,20,20,20,20,20,20,20,
-23,21,22,25,24,22,21,23,
-]
+def chessAI():
+    import os
+    import time
+    board = standardboard()
+    done = False
+    while not(done):
+        os.system('clear')
+        printb(board)
+        print("White to move")
+        start = time.process_time()
+        computermove = chessPlayer2(board,10)
+        end = time.process_time()
+        print(end - start)
 
-time(chessPlayer,1,b,10)
+
+        position,newmove = computermove[1][0],computermove[1][1]
+        board[position],board[newmove] = 0,board[position]
+
+        if not(25 in list(board[i] for i in GetPlayerPositions(board,20))):
+            print('White Wins')
+            break
+
+
+        os.system('clear')
+        printb(board)
+
+        print("Black to move")
+        start = time.process_time()
+        computermove = chessPlayer(board,20)
+        end = time.process_time()
+        position,newmove = computermove[1][0],computermove[1][1]
+        board[position],board[newmove] = 0,board[position]
+        print(end - start)
+
+        if not(15 in list(board[i] for i in GetPlayerPositions(board,10))):
+            print('Black Wins')
+            break
+
+        os.system('clear')
+        printb(board)
+
+
+chessAI()
+#chess

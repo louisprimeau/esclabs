@@ -336,7 +336,14 @@ def score(b,pl):
     wking = [20, 30, 10, 0, 0, 10, 30, 20,20, 20, 0, 0, 0, 0, 20, 20,-30, -40, -40, -50, -50, -40, -40, -30,-30, -40, -40, -50, -50, -40, -40, -30,-30, -40, -40, -50, -50, -40, -40, -30,-30, -40, -40, -50, -50, -40, -40, -30,-10, -20, -20, -20, -20, -20, -20, -10,-20, -30, -30, -40, -40, -30, -30, -20]
 
 
-    bpawn = [0, 0, 0, 0, 0, 0, 0, 0, 50, 50, 50, 50, 50, 50, 50, 50, 10, 10, 20, 30, 30, 20, 10, 10, 5, 5, 10, 27, 27, 10, 5, 5, 0, 0, 0, 25, 25, 0, 0, 0, 5, -5, -10, 0, 0, -10, -5, 5, 5, 10, 10, -25, -25, 10, 10, 5, 0, 0, 0, 0, 0, 0, 0, 0]
+    bpawn = [0, 0, 0, 0, 0, 0, 0, 0,
+    50, 50, 50, 50, 50, 50, 50, 50,
+    10, 10, 20, 30, 30, 20, 10, 10,
+    5, 5, 10, 27, 27, 10, 5, 5,
+    0, 0, 0, 25, 25, 0, 0, 0,
+    5, -5, -10, 0, 0, -10, -5, 5,
+    5, 10, 10, -25, -25, 10, 10, 5,
+    0, 0, 0, 0, 0, 0, 0, 0]
     bknight = [-50, -40, -30, -30, -30, -30, -40, -50, -40, -20, 0, 0, 0, 0, -20, -40, -30, 0, 10, 15, 15, 10, 0, -30, -30, 5, 15, 20, 20, 15, 5, -30, -30, 0, 15, 20, 20, 15, 0, -30, -30, 5, 10, 15, 15, 10, 5, -30, -40, -20, 0, 5, 5, 0, -20, -40, -50, -40, -20, -30, -30, -20, -40, -50]
     bbishop = [-20, -10, -10, -10, -10, -10, -10, -20, -10, 0, 0, 0, 0, 0, 0, -10, -10, 0, 5, 10, 10, 5, 0, -10, -10, 5, 5, 10, 10, 5, 5, -10, -10, 0, 10, 10, 10, 10, 0, -10, -10, 10, 10, 10, 10, 10, 10, -10, -10, 5, 0, 0, 0, 0, 5, -10, -20, -10, -40, -10, -10, -40, -10, -20]
     bking = [-30, -40, -40, -50, -50, -40, -40, -30, -30, -40, -40, -50, -50, -40, -40, -30, -30, -40, -40, -50, -50, -40, -40, -30, -30, -40, -40, -50, -50, -40, -40, -30, -20, -30, -30, -40, -40, -30, -30, -20, -10, -20, -20, -20, -20, -20, -20, -10, 20, 20, 0, 0, 0, 0, 20, 20, 20, 30, 10, 0, 0, 10, 30, 20]
@@ -377,23 +384,17 @@ def score(b,pl):
                     score += 10000 * -1 + bking[i] * -1 * 0.4
 
     return(score * a)
-def move(b,position,newmove):
+def boardmove(b,position,newmove):
     bnew = list(b)
     bnew[position],bnew[newmove] = 0,bnew[position]
     return(bnew)
-def search(b,pl,depth):
-
-    newmove = [-1,-1]
-    moves = getmoves(b,pl)
-    moves.sort(key = lambda x: x[2], reverse = True)
-    moves = moves[0:5] #Pick 5 best moves.
-
-    if(depth > 1):
-        for i in range(0,len(moves),1):
-            newboard = move(b,moves[i][0],moves[i][1])
-            moves[i].append(search(newboard, oppositepl(pl),depth-1))
-            moves[i][2] = -maxscore(moves[i][3])
-    return(moves)
+def isKingUnderThreat(b,pl):
+    king = b.index(pl + 5)
+    for i in GetPlayerPositions(b,pl):
+        for j in GetPieceLegalMoves(b,i):
+            if j == king:
+                return(True)
+    return(False)
 def levelorder(t):
     traversal = []
     q = []
@@ -427,7 +428,7 @@ def getmoves(b, pl):
     moves = []
     for i in GetPlayerPositions(b,pl):
         for j in GetPieceLegalMoves(b,i):
-            moves.append([i,j,score(move(b,i,j),pl)])
+            moves.append([i,j,score(boardmove(b,i,j),pl)])
     return(moves)
 def treeprint(t,depth):
     print(t[0:3])
@@ -440,22 +441,56 @@ def treeprint(t,depth):
 def forestprint(t):
     for i in t:
         treeprint(i,1)
-def standardboard():
-    return([
-13,11,12,14,15,12,11,13,
-10,10,10,10,10,10,10,10,
-0, 0, 0, 0, 0, 0, 0, 0,
-0, 0, 0, 0, 0, 0, 0, 0,
-0, 0, 0, 0, 0, 0, 0, 0,
-0, 0, 0, 0, 0, 0, 0, 0,
-20,20,20,20,20,20,20,20,
-23,21,22,24,25,22,21,23,
-])
-def chessPlayer(b,pl):
+
+"""def chessPlayer(b,pl):
     #DEPTH = Number of moves looked ahead; must be an even number.
     depth = 6
     candidateMoves = [[a[0:2], a[2]] for a in getmoves(b,pl)]
     move = search(b,pl,depth)
     tree = levelorder(move)
     move = maxscoremove(move)
-    return([True, move, candidateMoves, tree])
+    return([True, move, candidateMoves, tree]) """
+
+def search(b,pl,depth):
+
+    moves = getmoves(b,pl)
+    moves.sort(key = lambda x: x[2], reverse = True)
+    moves = moves[0:5] #Pick 5 best moves.
+
+    if(depth > 1):
+        for i in range(0,len(moves),1):
+            newboard = boardmove(b,moves[i][0],moves[i][1])
+            moves[i].append(search(newboard, oppositepl(pl),depth-1))
+            moves[i][2] = -maxscore(moves[i][3])
+    return(moves)
+
+def chessPlayer2(b,pl):
+    candidateMoves = [[a[0:2], a[2]] for a in getmoves(b,pl)]
+    move = alphabetaroot(b,pl)[0:2]
+    tree = levelorder(search(b,pl,2))
+    return([True,move,candidateMoves,tree])
+
+
+def alphabetaroot(b,pl):
+    move = alphabetasearch(b,pl,-100000,100000,7)
+    return(move)
+def alphabetasearch(b,pl,alpha,beta,depth):
+
+    moves = getmoves(b,pl)
+    moves.sort(key = lambda x: x[2], reverse = True)
+    moves = moves[0:5]
+
+    bestscore = -100000
+    bestmove = []
+
+    for move in moves:
+        bnew = boardmove(b,move[0],move[1])
+        if(depth == 0):
+            movescore = score(bnew,pl)
+        else:
+            movescore = -(alphabetasearch(bnew, oppositepl(pl), -beta, -alpha, depth-1)[2])
+        if(movescore > bestscore): bestscore,bestmove = movescore,move
+        if(bestscore > alpha): alpha = bestscore
+        if(alpha >= beta): return([bestmove[0], bestmove[1], alpha])
+
+    return([bestmove[0], bestmove[1], bestscore])
